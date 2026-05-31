@@ -1,0 +1,79 @@
+'use client';
+
+import { useEffect } from 'react';
+import { useAppStore } from '@/store/useAppStore';
+import { useAuthStore } from '@/store/useAuthStore';
+import { useCartStore } from '@/store/useCartStore';
+import Header from '@/components/layout/Header';
+import Footer from '@/components/layout/Footer';
+import HomeView from '@/views/HomeView';
+import ProductsView from '@/views/ProductsView';
+import ProductDetailView from '@/views/ProductDetailView';
+import CartView from '@/views/CartView';
+import CheckoutView from '@/views/CheckoutView';
+import OrderHistoryView from '@/views/OrderHistoryView';
+import OrderDetailView from '@/views/OrderDetailView';
+import AdminDashboardView from '@/views/AdminDashboardView';
+import AdminProductsView from '@/views/AdminProductsView';
+import AdminOrdersView from '@/views/AdminOrdersView';
+import AdminUsersView from '@/views/AdminUsersView';
+import LoginView from '@/views/LoginView';
+import RegisterView from '@/views/RegisterView';
+
+export default function Home() {
+  const view = useAppStore((s) => s.view);
+  const fetchUser = useAuthStore((s) => s.fetchUser);
+  const fetchCart = useCartStore((s) => s.fetchCart);
+  const user = useAuthStore((s) => s.user);
+
+  useEffect(() => {
+    fetchUser();
+  }, [fetchUser]);
+
+  useEffect(() => {
+    if (user) {
+      fetchCart();
+    }
+  }, [user, fetchCart]);
+
+  const renderView = () => {
+    switch (view.page) {
+      case 'home':
+        return <HomeView />;
+      case 'products':
+        return <ProductsView />;
+      case 'product-detail':
+        return <ProductDetailView />;
+      case 'cart':
+        return <CartView />;
+      case 'checkout':
+        return <CheckoutView />;
+      case 'orders':
+        return <OrderHistoryView />;
+      case 'order-detail':
+        return <OrderDetailView />;
+      case 'admin':
+        return <AdminDashboardView />;
+      case 'admin-products':
+        return <AdminProductsView />;
+      case 'admin-orders':
+        return <AdminOrdersView />;
+      case 'admin-users':
+        return <AdminUsersView />;
+      case 'login':
+        return <LoginView />;
+      case 'register':
+        return <RegisterView />;
+      default:
+        return <HomeView />;
+    }
+  };
+
+  return (
+    <div className="min-h-screen flex flex-col">
+      <Header />
+      <main className="flex-1">{renderView()}</main>
+      <Footer />
+    </div>
+  );
+}
