@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import Image from 'next/image';
 import {
   Plus,
@@ -13,6 +13,11 @@ import {
   ShoppingBag,
   Users,
   ChevronLeft,
+  Upload,
+  X,
+  Link,
+  ImagePlus,
+  Loader2,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -21,6 +26,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Card, CardContent } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Dialog,
   DialogContent,
@@ -64,14 +70,19 @@ export default function AdminProductsView() {
   const [formComparePrice, setFormComparePrice] = useState('');
   const [formCategoryId, setFormCategoryId] = useState('');
   const [formStock, setFormStock] = useState('');
-  const [formImages, setFormImages] = useState('');
+  const [formImages, setFormImages] = useState<string[]>([]);
   const [formTags, setFormTags] = useState('');
   const [formActive, setFormActive] = useState(true);
   const [formFeatured, setFormFeatured] = useState(false);
 
+  // Upload state
+  const [uploading, setUploading] = useState(false);
+  const [urlInput, setUrlInput] = useState('');
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const fetchProducts = useCallback(async () => {
     try {
-      const res = await fetch('/api/products?limit=100');
+      const res = await fetch('/api/products?limit=100&sort=newest&admin=true');
       const data = await res.json();
       setProducts(data.products || data || []);
     } catch {
@@ -111,7 +122,7 @@ export default function AdminProductsView() {
     setFormComparePrice(product.comparePrice?.toString() || '');
     setFormCategoryId(product.categoryId);
     setFormStock(product.stock.toString());
-    setFormImages(product.images?.join(', ') || '');
+    setFormImages(product.images || []);
     setFormTags(product.tags?.join(', ') || '');
     setFormActive(product.active);
     setFormFeatured(product.featured);
@@ -125,10 +136,96 @@ export default function AdminProductsView() {
     setFormComparePrice('');
     setFormCategoryId('');
     setFormStock('');
-    setFormImages('');
+    setFormImages([]);
     setFormTags('');
     setFormActive(true);
     setFormFeatured(false);
+    setUrlInput('');
+  };
+
+  const handleFileUpload = async (files: FileList | null) => {
+    if (!files || files.length === 0) return;
+
+    setUploading(true);
+    let uploadedCount = 0;
+
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+
+      // Client-side validation
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml'];
+      if (!allowedTypes.includes(file.type)) {
+        toast.error(`"${file.name}" is not a supported image type`);
+        continue;
+      }
+
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error(`"${file.name}" exceeds 5MB limit`);
+        continue;
+      }
+
+      try {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const res = await fetch('/api/upload', {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (res.ok) {
+          const data = await res.json();
+          setFormImages((prev) => [...prev, data.url]);
+          uploadedCount++;
+        } else {
+          const data = await res.json();
+          toast.error(data.error || `Failed to upload ${file.name}`);
+        }
+      } catch {
+        toast.error(`Failed to upload ${file.name}`);
+      }
+    }
+
+    if (uploadedCount > 0) {
+      toast.success(`${uploadedCount} image${uploadedCount > 1 ? 's' : ''} uploaded successfully`);
+    }
+
+    setUploading(false);
+    // Reset file input
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  const handleAddUrl = () => {
+    const trimmed = urlInput.trim();
+    if (!trimmed) {
+      toast.error('Please enter an image URL');
+      return;
+    }
+    // Basic URL validation
+    try {
+      new URL(trimmed);
+    } catch {
+      toast.error('Please enter a valid URL');
+      return;
+    }
+    setFormImages((prev) => [...prev, trimmed]);
+    setUrlInput('');
+    toast.success('Image URL added');
+  };
+
+  const handleRemoveImage = (index: number) => {
+    setFormImages((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const handleReorderImage = (fromIndex: number, toIndex: number) => {
+    setFormImages((prev) => {
+      const newImages = [...prev];
+      const [moved] = newImages.splice(fromIndex, 1);
+      newImages.splice(toIndex, 0, moved);
+      return newImages;
+    });
   };
 
   const handleSave = async () => {
@@ -145,10 +242,7 @@ export default function AdminProductsView() {
         comparePrice: formComparePrice ? parseFloat(formComparePrice) : null,
         categoryId: formCategoryId,
         stock: parseInt(formStock),
-        images: formImages
-          .split(',')
-          .map((s) => s.trim())
-          .filter(Boolean),
+        images: formImages,
         tags: formTags
           .split(',')
           .map((s) => s.trim())
@@ -479,14 +573,176 @@ export default function AdminProductsView() {
                 />
               </div>
             </div>
-            <div>
-              <Label>Images (comma-separated URLs)</Label>
-              <Input
-                value={formImages}
-                onChange={(e) => setFormImages(e.target.value)}
-                placeholder="https://example.com/image1.jpg, https://example.com/image2.jpg"
-              />
+
+            {/* Image Management Section */}
+            <div className="space-y-3">
+              <Label className="text-base font-semibold">Product Images</Label>
+
+              {/* Image Tabs: Upload from Device / Add URL */}
+              <Tabs defaultValue="upload" className="w-full">
+                <TabsList className="w-full grid grid-cols-2">
+                  <TabsTrigger value="upload" className="gap-2">
+                    <Upload className="size-4" />
+                    Upload from Device
+                  </TabsTrigger>
+                  <TabsTrigger value="url" className="gap-2">
+                    <Link className="size-4" />
+                    Add Image URL
+                  </TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="upload" className="mt-3">
+                  <div
+                    className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
+                      uploading
+                        ? 'border-emerald-300 bg-emerald-50/50'
+                        : 'border-gray-200 hover:border-emerald-400 hover:bg-emerald-50/30'
+                    }`}
+                    onDragOver={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                    }}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      if (!uploading) {
+                        handleFileUpload(e.dataTransfer.files);
+                      }
+                    }}
+                  >
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/jpeg,image/png,image/gif,image/webp,image/svg+xml"
+                      multiple
+                      className="hidden"
+                      onChange={(e) => handleFileUpload(e.target.files)}
+                    />
+                    {uploading ? (
+                      <div className="flex flex-col items-center gap-2">
+                        <Loader2 className="size-8 text-emerald-600 animate-spin" />
+                        <p className="text-sm text-emerald-600 font-medium">Uploading...</p>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col items-center gap-2">
+                        <ImagePlus className="size-8 text-muted-foreground/50" />
+                        <p className="text-sm text-muted-foreground">
+                          Drag & drop images here, or
+                        </p>
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          className="border-emerald-600 text-emerald-600 hover:bg-emerald-50"
+                          onClick={() => fileInputRef.current?.click()}
+                        >
+                          <Upload className="size-4 mr-1" />
+                          Browse Files
+                        </Button>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          JPEG, PNG, GIF, WebP, SVG • Max 5MB per file
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="url" className="mt-3">
+                  <div className="flex gap-2">
+                    <Input
+                      value={urlInput}
+                      onChange={(e) => setUrlInput(e.target.value)}
+                      placeholder="https://example.com/image.jpg"
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          handleAddUrl();
+                        }
+                      }}
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="shrink-0 border-emerald-600 text-emerald-600 hover:bg-emerald-50"
+                      onClick={handleAddUrl}
+                    >
+                      <Plus className="size-4 mr-1" />
+                      Add URL
+                    </Button>
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Enter the full URL of the image and click Add URL
+                  </p>
+                </TabsContent>
+              </Tabs>
+
+              {/* Image Preview Grid */}
+              {formImages.length > 0 && (
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm text-muted-foreground">
+                      {formImages.length} image{formImages.length !== 1 ? 's' : ''} added
+                      {formImages.length > 1 && (
+                        <span className="text-xs ml-1">(drag to reorder, first image is primary)</span>
+                      )}
+                    </p>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="text-red-500 hover:text-red-700 text-xs h-7"
+                      onClick={() => setFormImages([])}
+                    >
+                      Remove All
+                    </Button>
+                  </div>
+                  <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
+                    {formImages.map((img, index) => (
+                      <div
+                        key={`${img}-${index}`}
+                        className="relative group rounded-lg border-2 overflow-hidden bg-muted aspect-square cursor-grab active:cursor-grabbing"
+                        draggable
+                        onDragStart={(e) => {
+                          e.dataTransfer.setData('text/plain', String(index));
+                        }}
+                        onDragOver={(e) => {
+                          e.preventDefault();
+                        }}
+                        onDrop={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          const fromIndex = parseInt(e.dataTransfer.getData('text/plain'), 10);
+                          if (!isNaN(fromIndex) && fromIndex !== index) {
+                            handleReorderImage(fromIndex, index);
+                          }
+                        }}
+                      >
+                        <Image
+                          src={img}
+                          alt={`Product image ${index + 1}`}
+                          fill
+                          unoptimized
+                          className="object-cover"
+                        />
+                        {index === 0 && (
+                          <Badge className="absolute top-1 left-1 text-[10px] bg-emerald-600 text-white border-0 px-1.5 py-0">
+                            Primary
+                          </Badge>
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveImage(index)}
+                          className="absolute top-1 right-1 size-5 rounded-full bg-black/60 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
+                        >
+                          <X className="size-3" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
+
             <div>
               <Label>Tags (comma-separated)</Label>
               <Input

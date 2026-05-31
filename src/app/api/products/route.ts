@@ -19,7 +19,9 @@ export async function GET(request: NextRequest) {
     const page = parseInt(searchParams.get('page') || '1', 10);
     const limit = parseInt(searchParams.get('limit') || '12', 10);
 
-    const where: Record<string, unknown> = { active: true };
+    const adminMode = searchParams.get('admin') === 'true';
+    const adminFlag = await isAdmin();
+    const where: Record<string, unknown> = adminMode && adminFlag ? {} : { active: true };
 
     if (category) {
       const categoryRecord = await db.category.findUnique({

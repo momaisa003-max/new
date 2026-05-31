@@ -25,3 +25,34 @@ Stage Summary:
 - Features: Product browsing/search/filter, cart management, multi-step checkout, order history, reviews, admin dashboard with charts, admin product/order/user management
 - Tech: Next.js 16, Prisma/SQLite, Zustand, shadcn/ui, Tailwind CSS, Recharts, Sonner
 - All APIs verified working, lint clean, application rendering correctly
+
+---
+Task ID: 2
+Agent: Main Orchestrator
+Task: Add file upload from device capability to admin product management while keeping image URL input
+
+Work Log:
+- Created /api/upload route that accepts multipart form data, validates file type (JPEG, PNG, GIF, WebP, SVG) and size (5MB max), saves to public/uploads with UUID filenames
+- Added admin auth check to upload API endpoint
+- Completely redesigned AdminProductsView image management section with:
+  - Tabbed interface: "Upload from Device" and "Add Image URL"
+  - Drag & drop file upload zone with visual feedback
+  - File browser button for selecting files from device
+  - URL input with validation and Add URL button
+  - Image preview grid with thumbnails
+  - Remove individual images or "Remove All" button
+  - Drag-to-reorder images (first image is primary)
+  - Primary badge on first image
+- Updated products API GET endpoint to support ?admin=true param for showing inactive products
+- Updated AdminProductsView to fetch with ?admin=true to show all products (active + inactive)
+- Changed formImages from comma-separated string to proper string[] array for better UX
+- Tested upload API: successfully uploaded SVG test file, verified file saved and accessible
+- Lint passes with zero errors
+- Dev server running and responding correctly on port 3000
+
+Stage Summary:
+- File upload feature complete: admins can upload images from their device OR add image URLs
+- Upload API at /api/upload with validation and auth protection
+- Images stored in public/uploads/ with unique filenames
+- Admin products view now shows inactive products too
+- All existing functionality preserved
