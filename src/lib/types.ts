@@ -103,6 +103,23 @@ export interface ReviewType {
   updatedAt: string;
 }
 
+export interface ContactMessageType {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string | null;
+  subject: string;
+  message: string;
+  category: string;
+  status: string;
+  priority: string;
+  userId?: string | null;
+  reply?: string | null;
+  repliedAt?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export type AppView =
   | { page: 'home' }
   | { page: 'products'; categoryId?: string; search?: string }
@@ -115,6 +132,7 @@ export type AppView =
   | { page: 'admin-products' }
   | { page: 'admin-orders' }
   | { page: 'admin-users' }
+  | { page: 'admin-messages' }
   | { page: 'login' }
   | { page: 'register' }
   | { page: 'about' }
@@ -128,7 +146,8 @@ export type AppView =
   | { page: 'reload-balance' }
   | { page: 'your-account' }
   | { page: 'returns' }
-  | { page: 'help' };
+  | { page: 'help' }
+  | { page: 'contact' };
 
 export type OrderStatus = 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
 export type PaymentStatus = 'pending' | 'paid' | 'failed' | 'refunded';

@@ -35,6 +35,7 @@ const footerLinks: { title: string; links: { label: string; action: AppView }[] 
       { label: 'Your Orders', action: { page: 'orders' } },
       { label: 'Returns & Replacements', action: { page: 'returns' } },
       { label: 'Help', action: { page: 'help' } },
+      { label: 'Contact Us', action: { page: 'contact' } },
     ],
   },
 ];

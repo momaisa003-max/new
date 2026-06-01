@@ -163,17 +163,17 @@ export default function HelpView() {
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-center text-gray-900 mb-10">Still Need Help?</h2>
           <div className="grid sm:grid-cols-3 gap-6 max-w-3xl mx-auto">
-            <Card className="py-0 gap-0 hover:shadow-md transition-shadow cursor-pointer">
+            <Card className="py-0 gap-0 hover:shadow-md transition-shadow cursor-pointer" onClick={() => navigate({ page: 'contact' })}>
               <CardContent className="p-6 text-center">
                 <MessageCircle className="size-8 text-emerald-600 mx-auto mb-3" />
-                <h3 className="font-semibold text-gray-900 mb-1">Live Chat</h3>
-                <p className="text-xs text-muted-foreground mb-3">Chat with our support team</p>
+                <h3 className="font-semibold text-gray-900 mb-1">Contact Form</h3>
+                <p className="text-xs text-muted-foreground mb-3">Send us a detailed message</p>
                 <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700 text-white">
-                  Start Chat
+                  Contact Us
                 </Button>
               </CardContent>
             </Card>
-            <Card className="py-0 gap-0 hover:shadow-md transition-shadow cursor-pointer">
+            <Card className="py-0 gap-0 hover:shadow-md transition-shadow cursor-pointer" onClick={() => navigate({ page: 'contact' })}>
               <CardContent className="p-6 text-center">
                 <Shield className="size-8 text-emerald-600 mx-auto mb-3" />
                 <h3 className="font-semibold text-gray-900 mb-1">Email Support</h3>
@@ -183,7 +183,7 @@ export default function HelpView() {
                 </Button>
               </CardContent>
             </Card>
-            <Card className="py-0 gap-0 hover:shadow-md transition-shadow cursor-pointer">
+            <Card className="py-0 gap-0 hover:shadow-md transition-shadow cursor-pointer" onClick={() => navigate({ page: 'contact' })}>
               <CardContent className="p-6 text-center">
                 <HelpCircle className="size-8 text-emerald-600 mx-auto mb-3" />
                 <h3 className="font-semibold text-gray-900 mb-1">Phone Support</h3>

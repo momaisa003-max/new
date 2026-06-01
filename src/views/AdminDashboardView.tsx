@@ -122,6 +122,12 @@ export default function AdminDashboardView() {
           >
             Manage Orders
           </button>
+          <button
+            onClick={() => navigate({ page: 'admin-messages' })}
+            className="text-sm text-emerald-600 hover:text-emerald-700 font-medium ml-4"
+          >
+            Messages
+          </button>
         </div>
       </div>
 

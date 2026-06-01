@@ -31,6 +31,8 @@ import ReloadBalanceView from '@/views/ReloadBalanceView';
 import YourAccountView from '@/views/YourAccountView';
 import ReturnsView from '@/views/ReturnsView';
 import HelpView from '@/views/HelpView';
+import ContactView from '@/views/ContactView';
+import AdminMessagesView from '@/views/AdminMessagesView';
 
 export default function Home() {
   const view = useAppStore((s) => s.view);
@@ -100,6 +102,10 @@ export default function Home() {
         return <ReturnsView />;
       case 'help':
         return <HelpView />;
+      case 'contact':
+        return <ContactView />;
+      case 'admin-messages':
+        return <AdminMessagesView />;
       default:
         return <HomeView />;
     }

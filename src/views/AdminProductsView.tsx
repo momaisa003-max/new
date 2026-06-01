@@ -12,6 +12,7 @@ import {
   Package,
   ShoppingBag,
   Users,
+  Mail,
   ChevronLeft,
   Upload,
   X,
@@ -309,6 +310,7 @@ export default function AdminProductsView() {
     { icon: Package, label: 'Products', page: 'admin-products' as const },
     { icon: ShoppingBag, label: 'Orders', page: 'admin-orders' as const },
     { icon: Users, label: 'Users', page: 'admin-users' as const },
+    { icon: Mail, label: 'Messages', page: 'admin-messages' as const },
   ];
 
   return (

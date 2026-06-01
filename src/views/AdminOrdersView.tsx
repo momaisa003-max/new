@@ -6,6 +6,7 @@ import {
   Package,
   ShoppingBag,
   Users,
+  Mail,
   ChevronLeft,
   Eye,
 } from 'lucide-react';
@@ -83,6 +84,7 @@ export default function AdminOrdersView() {
     { icon: Package, label: 'Products', page: 'admin-products' as const },
     { icon: ShoppingBag, label: 'Orders', page: 'admin-orders' as const },
     { icon: Users, label: 'Users', page: 'admin-users' as const },
+    { icon: Mail, label: 'Messages', page: 'admin-messages' as const },
   ];
 
   return (
