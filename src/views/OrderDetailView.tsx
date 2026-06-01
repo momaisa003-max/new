@@ -9,6 +9,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Separator } from '@/components/ui/separator';
 import { useAppStore } from '@/store/useAppStore';
 import type { OrderType } from '@/lib/types';
+import { formatPrice } from '@/lib/utils';
 
 const statusColors: Record<string, string> = {
   pending: 'bg-yellow-100 text-yellow-800',
@@ -111,11 +112,11 @@ export default function OrderDetailView() {
                   <div>
                     <p className="font-medium text-sm">{item.product?.name || 'Unknown Product'}</p>
                     <p className="text-sm text-muted-foreground">
-                      Qty: {item.quantity} &times; ${item.price.toFixed(2)}
+                      Qty: {item.quantity} &times; {formatPrice(item.price)}
                     </p>
                   </div>
                   <span className="font-semibold">
-                    ${(item.price * item.quantity).toFixed(2)}
+                    {formatPrice(item.price * item.quantity)}
                   </span>
                 </div>
               ))}
@@ -124,7 +125,7 @@ export default function OrderDetailView() {
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Subtotal</span>
-                <span>${order.subtotal.toFixed(2)}</span>
+                <span>{formatPrice(order.subtotal)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Shipping</span>
@@ -132,18 +133,18 @@ export default function OrderDetailView() {
                   {order.shipping === 0 ? (
                     <span className="text-emerald-600">FREE</span>
                   ) : (
-                    `$${order.shipping.toFixed(2)}`
+                    formatPrice(order.shipping)
                   )}
                 </span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Tax</span>
-                <span>${order.tax.toFixed(2)}</span>
+                <span>{formatPrice(order.tax)}</span>
               </div>
               <Separator />
               <div className="flex justify-between text-lg font-bold">
                 <span>Total</span>
-                <span className="text-emerald-600">${order.total.toFixed(2)}</span>
+                <span className="text-emerald-600">{formatPrice(order.total)}</span>
               </div>
             </div>
           </CardContent>

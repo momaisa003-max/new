@@ -16,6 +16,7 @@ import { Badge } from '@/components/ui/badge';
 import { useAppStore } from '@/store/useAppStore';
 import { useAuthStore } from '@/store/useAuthStore';
 import type { OrderType } from '@/lib/types';
+import { formatPrice } from '@/lib/utils';
 import {
   BarChart,
   Bar,
@@ -67,7 +68,7 @@ export default function AdminDashboardView() {
   const statCards = [
     {
       title: 'Total Revenue',
-      value: `$${(stats?.totalRevenue || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}`,
+      value: formatPrice(stats?.totalRevenue || 0),
       icon: DollarSign,
       change: '+12.5%',
       up: true,
@@ -183,7 +184,7 @@ export default function AdminDashboardView() {
                 <XAxis dataKey="month" className="text-xs" />
                 <YAxis className="text-xs" />
                 <Tooltip
-                  formatter={(value: number) => [`$${value.toLocaleString()}`, 'Revenue']}
+                  formatter={(value: number) => [formatPrice(value), 'Revenue']}
                 />
                 <Bar dataKey="revenue" fill="#059669" radius={[4, 4, 0, 0]} />
               </BarChart>
@@ -231,7 +232,7 @@ export default function AdminDashboardView() {
                         {new Date(order.createdAt).toLocaleDateString()}
                       </td>
                       <td className="py-3 text-sm font-medium">
-                        ${order.total.toFixed(2)}
+                        {formatPrice(order.total)}
                       </td>
                       <td className="py-3">
                         <Badge

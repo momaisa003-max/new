@@ -11,6 +11,7 @@ import { useAppStore } from '@/store/useAppStore';
 import { useCartStore } from '@/store/useCartStore';
 import { useAuthStore } from '@/store/useAuthStore';
 import type { CartItemType } from '@/lib/types';
+import { formatPrice, FREE_SHIPPING_THRESHOLD } from '@/lib/utils';
 import { toast } from 'sonner';
 
 export default function CartView() {
@@ -36,7 +37,7 @@ export default function CartView() {
 
   const subtotal = getSubtotal();
   const tax = subtotal * 0.08;
-  const shipping = subtotal >= 50 ? 0 : 9.99;
+  const shipping = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : 9.99;
   const total = subtotal + tax + shipping;
 
   const handleRemove = async (item: CartItemType) => {
@@ -139,7 +140,7 @@ export default function CartView() {
                 {item.product?.comparePrice && (
                   <div className="flex items-center gap-2 mt-1">
                     <span className="text-sm text-muted-foreground line-through">
-                      ${item.product.comparePrice.toFixed(2)}
+                      {formatPrice(item.product.comparePrice)}
                     </span>
                     <span className="text-xs text-red-600 font-medium">
                       Save{' '}
@@ -153,7 +154,7 @@ export default function CartView() {
                   </div>
                 )}
                 <p className="text-lg font-bold text-emerald-600 mt-1">
-                  ${item.product?.price?.toFixed(2) || '0.00'}
+                  {formatPrice(item.product?.price || 0)}
                 </p>
 
                 <div className="flex items-center justify-between mt-3">
@@ -205,7 +206,7 @@ export default function CartView() {
               <span className="text-muted-foreground">
                 Subtotal ({items.reduce((s, i) => s + i.quantity, 0)} items)
               </span>
-              <span className="font-medium">${subtotal.toFixed(2)}</span>
+              <span className="font-medium">{formatPrice(subtotal)}</span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Shipping</span>
@@ -213,22 +214,22 @@ export default function CartView() {
                 {shipping === 0 ? (
                   <span className="text-emerald-600">FREE</span>
                 ) : (
-                  `$${shipping.toFixed(2)}`
+                  formatPrice(shipping)
                 )}
               </span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Estimated Tax</span>
-              <span className="font-medium">${tax.toFixed(2)}</span>
+              <span className="font-medium">{formatPrice(tax)}</span>
             </div>
             <Separator />
             <div className="flex justify-between text-lg font-bold">
               <span>Total</span>
-              <span className="text-emerald-600">${total.toFixed(2)}</span>
+              <span className="text-emerald-600">{formatPrice(total)}</span>
             </div>
-            {subtotal < 50 && (
+            {subtotal < FREE_SHIPPING_THRESHOLD && (
               <p className="text-xs text-muted-foreground">
-                Add ${(50 - subtotal).toFixed(2)} more for free shipping!
+                Add {formatPrice(FREE_SHIPPING_THRESHOLD - subtotal)} more for free shipping!
               </p>
             )}
             <Button

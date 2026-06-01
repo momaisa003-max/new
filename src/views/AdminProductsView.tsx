@@ -44,6 +44,7 @@ import {
 import { useAppStore } from '@/store/useAppStore';
 import { useAuthStore } from '@/store/useAuthStore';
 import type { Product, Category } from '@/lib/types';
+import { formatPrice } from '@/lib/utils';
 import { toast } from 'sonner';
 
 export default function AdminProductsView() {
@@ -439,7 +440,7 @@ export default function AdminProductsView() {
                         {product.category?.name || '-'}
                       </td>
                       <td className="p-3 text-sm font-medium">
-                        ${product.price.toFixed(2)}
+                        {formatPrice(product.price)}
                       </td>
                       <td className="p-3 text-sm hidden md:table-cell">
                         <Badge

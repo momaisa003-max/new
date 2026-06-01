@@ -19,6 +19,18 @@ import AdminOrdersView from '@/views/AdminOrdersView';
 import AdminUsersView from '@/views/AdminUsersView';
 import LoginView from '@/views/LoginView';
 import RegisterView from '@/views/RegisterView';
+import AboutView from '@/views/AboutView';
+import CareersView from '@/views/CareersView';
+import PressReleasesView from '@/views/PressReleasesView';
+import SellOnAllShopView from '@/views/SellOnAllShopView';
+import AffiliateView from '@/views/AffiliateView';
+import AdvertiseView from '@/views/AdvertiseView';
+import PaymentMethodsView from '@/views/PaymentMethodsView';
+import ShopWithPointsView from '@/views/ShopWithPointsView';
+import ReloadBalanceView from '@/views/ReloadBalanceView';
+import YourAccountView from '@/views/YourAccountView';
+import ReturnsView from '@/views/ReturnsView';
+import HelpView from '@/views/HelpView';
 
 export default function Home() {
   const view = useAppStore((s) => s.view);
@@ -64,6 +76,30 @@ export default function Home() {
         return <LoginView />;
       case 'register':
         return <RegisterView />;
+      case 'about':
+        return <AboutView />;
+      case 'careers':
+        return <CareersView />;
+      case 'press-releases':
+        return <PressReleasesView />;
+      case 'sell-on-allshop':
+        return <SellOnAllShopView />;
+      case 'affiliate':
+        return <AffiliateView />;
+      case 'advertise':
+        return <AdvertiseView />;
+      case 'payment-methods':
+        return <PaymentMethodsView />;
+      case 'shop-with-points':
+        return <ShopWithPointsView />;
+      case 'reload-balance':
+        return <ReloadBalanceView />;
+      case 'your-account':
+        return <YourAccountView />;
+      case 'returns':
+        return <ReturnsView />;
+      case 'help':
+        return <HelpView />;
       default:
         return <HomeView />;
     }

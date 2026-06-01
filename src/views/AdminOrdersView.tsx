@@ -22,6 +22,7 @@ import {
 import { useAppStore } from '@/store/useAppStore';
 import { useAuthStore } from '@/store/useAuthStore';
 import type { OrderType } from '@/lib/types';
+import { formatPrice } from '@/lib/utils';
 import { toast } from 'sonner';
 
 const statusColors: Record<string, string> = {
@@ -170,7 +171,7 @@ export default function AdminOrdersView() {
                         {new Date(order.createdAt).toLocaleDateString()}
                       </td>
                       <td className="p-3 text-sm font-medium">
-                        ${order.total.toFixed(2)}
+                        {formatPrice(order.total)}
                       </td>
                       <td className="p-3">
                         <Select

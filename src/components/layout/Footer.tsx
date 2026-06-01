@@ -1,30 +1,43 @@
 'use client';
 
 import { useAppStore } from '@/store/useAppStore';
+import type { AppView } from '@/lib/types';
 
-const footerLinks = {
-  'Get to Know Us': [
-    { label: 'About AllShop', action: { page: 'home' } as const },
-    { label: 'Careers', action: { page: 'home' } as const },
-    { label: 'Press Releases', action: { page: 'home' } as const },
-  ],
-  'Make Money with Us': [
-    { label: 'Sell on AllShop', action: { page: 'home' } as const },
-    { label: 'Become an Affiliate', action: { page: 'home' } as const },
-    { label: 'Advertise Your Products', action: { page: 'home' } as const },
-  ],
-  'AllShop Payment': [
-    { label: 'Payment Methods', action: { page: 'home' } as const },
-    { label: 'Shop with Points', action: { page: 'home' } as const },
-    { label: 'Reload Your Balance', action: { page: 'home' } as const },
-  ],
-  'Let Us Help You': [
-    { label: 'Your Account', action: { page: 'home' } as const },
-    { label: 'Your Orders', action: { page: 'orders' } as const },
-    { label: 'Returns & Replacements', action: { page: 'home' } as const },
-    { label: 'Help', action: { page: 'home' } as const },
-  ],
-};
+const footerLinks: { title: string; links: { label: string; action: AppView }[] }[] = [
+  {
+    title: 'Get to Know Us',
+    links: [
+      { label: 'About AllShop', action: { page: 'about' } },
+      { label: 'Careers', action: { page: 'careers' } },
+      { label: 'Press Releases', action: { page: 'press-releases' } },
+    ],
+  },
+  {
+    title: 'Make Money with Us',
+    links: [
+      { label: 'Sell on AllShop', action: { page: 'sell-on-allshop' } },
+      { label: 'Become an Affiliate', action: { page: 'affiliate' } },
+      { label: 'Advertise Your Products', action: { page: 'advertise' } },
+    ],
+  },
+  {
+    title: 'AllShop Payment',
+    links: [
+      { label: 'Payment Methods', action: { page: 'payment-methods' } },
+      { label: 'Shop with Points', action: { page: 'shop-with-points' } },
+      { label: 'Reload Your Balance', action: { page: 'reload-balance' } },
+    ],
+  },
+  {
+    title: 'Let Us Help You',
+    links: [
+      { label: 'Your Account', action: { page: 'your-account' } },
+      { label: 'Your Orders', action: { page: 'orders' } },
+      { label: 'Returns & Replacements', action: { page: 'returns' } },
+      { label: 'Help', action: { page: 'help' } },
+    ],
+  },
+];
 
 export default function Footer() {
   const navigate = useAppStore((s) => s.navigate);
@@ -42,7 +55,7 @@ export default function Footer() {
       {/* Links */}
       <div className="container mx-auto px-4 py-10">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-          {Object.entries(footerLinks).map(([title, links]) => (
+          {footerLinks.map(({ title, links }) => (
             <div key={title}>
               <h3 className="text-white font-semibold mb-3 text-sm">{title}</h3>
               <ul className="space-y-2">

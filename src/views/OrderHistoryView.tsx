@@ -9,6 +9,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useAppStore } from '@/store/useAppStore';
 import { useAuthStore } from '@/store/useAuthStore';
 import type { OrderType } from '@/lib/types';
+import { formatPrice } from '@/lib/utils';
 
 const statusColors: Record<string, string> = {
   pending: 'bg-yellow-100 text-yellow-800',
@@ -124,7 +125,7 @@ export default function OrderHistoryView() {
                   </div>
                   <div className="flex items-center gap-4">
                     <span className="text-lg font-bold text-emerald-600">
-                      ${order.total.toFixed(2)}
+                      {formatPrice(order.total)}
                     </span>
                     <Button variant="ghost" size="sm" className="text-emerald-600">
                       <Eye className="size-4 mr-1" />

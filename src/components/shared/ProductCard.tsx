@@ -9,6 +9,7 @@ import { useCartStore } from '@/store/useCartStore';
 import { useAuthStore } from '@/store/useAuthStore';
 import Rating from '@/components/shared/Rating';
 import type { Product } from '@/lib/types';
+import { formatPrice } from '@/lib/utils';
 import { toast } from 'sonner';
 
 interface ProductCardProps {
@@ -73,11 +74,11 @@ export default function ProductCard({ product }: ProductCardProps) {
         <Rating value={product.rating} size="sm" count={product.reviewCount} />
         <div className="flex items-baseline gap-2">
           <span className="text-lg font-bold text-emerald-600">
-            ${product.price.toFixed(2)}
+            {formatPrice(product.price)}
           </span>
           {product.comparePrice && (
             <span className="text-sm text-muted-foreground line-through">
-              ${product.comparePrice.toFixed(2)}
+              {formatPrice(product.comparePrice)}
             </span>
           )}
         </div>

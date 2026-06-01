@@ -116,7 +116,19 @@ export type AppView =
   | { page: 'admin-orders' }
   | { page: 'admin-users' }
   | { page: 'login' }
-  | { page: 'register' };
+  | { page: 'register' }
+  | { page: 'about' }
+  | { page: 'careers' }
+  | { page: 'press-releases' }
+  | { page: 'sell-on-allshop' }
+  | { page: 'affiliate' }
+  | { page: 'advertise' }
+  | { page: 'payment-methods' }
+  | { page: 'shop-with-points' }
+  | { page: 'reload-balance' }
+  | { page: 'your-account' }
+  | { page: 'returns' }
+  | { page: 'help' };
 
 export type OrderStatus = 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
 export type PaymentStatus = 'pending' | 'paid' | 'failed' | 'refunded';

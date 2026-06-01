@@ -11,6 +11,7 @@ import { Separator } from '@/components/ui/separator';
 import { useAppStore } from '@/store/useAppStore';
 import { useCartStore } from '@/store/useCartStore';
 import type { ShippingAddress } from '@/lib/types';
+import { formatPrice, FREE_SHIPPING_THRESHOLD } from '@/lib/utils';
 import { toast } from 'sonner';
 
 type Step = 'shipping' | 'payment' | 'review' | 'confirmation';
@@ -46,7 +47,7 @@ export default function CheckoutView() {
 
   const subtotal = getSubtotal();
   const tax = subtotal * 0.08;
-  const shipping = subtotal >= 50 ? 0 : 9.99;
+  const shipping = subtotal >= FREE_SHIPPING_THRESHOLD ? 0 : 9.99;
   const total = subtotal + tax + shipping;
 
   const currentStepIndex = stepConfig.findIndex((s) => s.key === step);
@@ -386,7 +387,7 @@ export default function CheckoutView() {
                           {item.product?.name || 'Unknown'} x {item.quantity}
                         </span>
                         <span className="font-medium">
-                          ${((item.product?.price || 0) * item.quantity).toFixed(2)}
+                          {formatPrice((item.product?.price || 0) * item.quantity)}
                         </span>
                       </div>
                     ))}
@@ -403,7 +404,7 @@ export default function CheckoutView() {
                     onClick={handlePlaceOrder}
                     disabled={isProcessing}
                   >
-                    {isProcessing ? 'Placing Order...' : `Place Order - $${total.toFixed(2)}`}
+                    {isProcessing ? 'Placing Order...' : `Place Order - ${formatPrice(total)}`}
                   </Button>
                 </div>
               </CardContent>
@@ -458,14 +459,14 @@ export default function CheckoutView() {
                     {item.product?.name || 'Unknown'} x{item.quantity}
                   </span>
                   <span className="font-medium shrink-0">
-                    ${((item.product?.price || 0) * item.quantity).toFixed(2)}
+                    {formatPrice((item.product?.price || 0) * item.quantity)}
                   </span>
                 </div>
               ))}
               <Separator />
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Subtotal</span>
-                <span className="font-medium">${subtotal.toFixed(2)}</span>
+                <span className="font-medium">{formatPrice(subtotal)}</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Shipping</span>
@@ -473,18 +474,18 @@ export default function CheckoutView() {
                   {shipping === 0 ? (
                     <span className="text-emerald-600">FREE</span>
                   ) : (
-                    `$${shipping.toFixed(2)}`
+                    formatPrice(shipping)
                   )}
                 </span>
               </div>
               <div className="flex justify-between text-sm">
                 <span className="text-muted-foreground">Tax</span>
-                <span className="font-medium">${tax.toFixed(2)}</span>
+                <span className="font-medium">{formatPrice(tax)}</span>
               </div>
               <Separator />
               <div className="flex justify-between text-lg font-bold">
                 <span>Total</span>
-                <span className="text-emerald-600">${total.toFixed(2)}</span>
+                <span className="text-emerald-600">{formatPrice(total)}</span>
               </div>
             </CardContent>
           </Card>

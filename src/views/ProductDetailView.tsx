@@ -15,6 +15,7 @@ import { useCartStore } from '@/store/useCartStore';
 import { useAuthStore } from '@/store/useAuthStore';
 import Rating from '@/components/shared/Rating';
 import type { Product, ReviewType } from '@/lib/types';
+import { formatPrice } from '@/lib/utils';
 import { toast } from 'sonner';
 
 export default function ProductDetailView() {
@@ -224,11 +225,11 @@ export default function ProductDetailView() {
 
           <div className="flex items-baseline gap-3">
             <span className="text-3xl font-bold text-emerald-600">
-              ${product.price.toFixed(2)}
+              {formatPrice(product.price)}
             </span>
             {product.comparePrice && (
               <span className="text-xl text-muted-foreground line-through">
-                ${product.comparePrice.toFixed(2)}
+                {formatPrice(product.comparePrice)}
               </span>
             )}
             {discount > 0 && (

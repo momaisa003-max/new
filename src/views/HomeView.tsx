@@ -8,6 +8,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useAppStore } from '@/store/useAppStore';
 import ProductCard from '@/components/shared/ProductCard';
 import type { Product, Category } from '@/lib/types';
+import { formatPrice, FREE_SHIPPING_THRESHOLD } from '@/lib/utils';
 
 export default function HomeView() {
   const navigate = useAppStore((s) => s.navigate);
@@ -85,7 +86,7 @@ export default function HomeView() {
               <span className="text-emerald-200">All in One Place</span>
             </h1>
             <p className="text-lg md:text-xl text-emerald-100 mb-8">
-              Discover millions of products at unbeatable prices. Free shipping on orders over $50.
+              Discover millions of products at unbeatable prices. Free shipping on orders over {formatPrice(FREE_SHIPPING_THRESHOLD)}.
             </p>
             <div className="flex flex-wrap gap-3">
               <Button
@@ -221,7 +222,7 @@ export default function HomeView() {
       {/* Promo Banner */}
       <section className="bg-gradient-to-r from-amber-500 to-orange-500 text-white">
         <div className="container mx-auto px-4 py-10 text-center">
-          <h2 className="text-3xl font-bold mb-3">Free Shipping on Orders Over $50</h2>
+          <h2 className="text-3xl font-bold mb-3">Free Shipping on Orders Over {formatPrice(FREE_SHIPPING_THRESHOLD)}</h2>
           <p className="text-amber-100 mb-6 text-lg">
             Shop now and save on delivery costs!
           </p>
